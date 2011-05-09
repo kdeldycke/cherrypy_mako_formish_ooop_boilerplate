@@ -13,16 +13,31 @@ CONF_NAME = 'server.conf'
 
 
 
-class HelloWorld(object):
+class WebPublishing(object):
     def index(self):
-        html = "Hello World!"
+        html = ''
+        html += self.header()
+        html += "<h1>OpenERP Web Publishing Module</h1>"
+        html += self.footer()
         return html
-        
+
+    def header(self):
+        return """<html>
+                    <head>
+                      <title></title>
+                    </head>
+                    <body>
+               """
+
+    def footer(self):
+        return "</body>"
+
+    # Some class config
     index.exposed = True
 
 
 
 if __name__ == '__main__':
     conf_file = os.path.join(current_folder, CONF_NAME)
-    cherrypy.quickstart(HelloWorld(), config=conf_file)
+    cherrypy.quickstart(WebPublishing(), config=conf_file)
 
