@@ -1,12 +1,17 @@
+import os
 import cherrypy
 
-cherrypy.config.update({'server.socket_host': '127.0.0.1',
-                        'server.socket_port': 8081,
-                       })
+CONF_NAME = 'server.conf'
+
+
 
 class HelloWorld(object):
     def index(self):
         return "Hello World!"
     index.exposed = True
 
-cherrypy.quickstart(HelloWorld())
+
+if __name__ == '__main__':
+    conf_file = os.path.join(os.path.dirname(__file__), CONF_NAME)
+    cherrypy.quickstart(HelloWorld(), config=conf_file)
+
