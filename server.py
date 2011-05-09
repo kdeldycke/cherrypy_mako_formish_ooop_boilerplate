@@ -1,15 +1,26 @@
+### Some global variables
+CONF_NAME         = 'server.conf'
+LIB_DIRNAME       = 'lib'
+TEMPLATES_DIRNAME = 'templates'
+
+
+# Import all stuff we need
 import os
 import sys
 import cherrypy
 
+# Init Mako template parser and some of its utilities
+from mako.template import Template
+from mako.lookup   import TemplateLookup
+lookup = TemplateLookup( directories     = [TEMPLATES_DIRNAME]
+                       , output_encoding = 'utf-8'
+                       , encoding_errors = 'replace'
+                       )
+
 # Import the local copy of the OOOP module
 current_folder = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(current_folder, 'lib', 'ooop'))
+sys.path.insert(0, os.path.join(current_folder, LIB_DIRNAME, 'ooop'))
 from ooop import OOOP
-
-
-
-CONF_NAME = 'server.conf'
 
 
 
@@ -17,9 +28,6 @@ class WebPublisher(object):
 
     @cherrypy.expose
     def index(self):
-        html = ''
-        html += self.header()
-        html += "<h1>OpenERP Web Publishing Module</h1>"
         # Let's get some info from a demo OpenERP instance
         # Some doc on OOOP: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
         o = OOOP( user   = 'admin'
@@ -28,25 +36,9 @@ class WebPublisher(object):
                 , uri    = 'http://localhost'
                 , port   = 8069 # We are targetting the HTTP web service here
                 )
-        html += "<p>Connection to web service established at: %s</p>" % (repr(o).replace('<', '&lt;').replace('>', '&gt;'))
-        partners = o.ResPartner.all()
-        html += "<ul>"
-        for partner in partners:
-          html += "<li>%s</li>" % partner.name
-        html += "</ul>"
-        html += self.footer()
-        return html
-
-    def header(self):
-        return """<html>
-                    <head>
-                      <title></title>
-                    </head>
-                    <body>
-               """
-
-    def footer(self):
-        return "</body>"
+        partner_names = [p.name for p in o.ResPartner.all()]
+        t = lookup.get_template("index.html")
+        return t.render(partner_names=partner_names)
 
 
 
