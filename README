@@ -7,3 +7,16 @@ It leverage Python's module used in OpenERP like CherryPy.
 
 This code is sponsored by Smile.
 
+
+
+How-to setup this module
+------------------------
+
+1. Run the following command to run the server:
+
+     $ python ./server.py
+
+2. Go to the following URL in your browser:
+
+     http://localhost:8081
+
