@@ -42,7 +42,12 @@ class WebPublisher(object):
 
 
 
-if __name__ == '__main__':
+def main():
     conf_file = os.path.join(current_folder, CONF_NAME)
     cherrypy.quickstart(WebPublisher(), config=conf_file)
+
+
+
+if __name__ == '__main__':
+    main()
 
