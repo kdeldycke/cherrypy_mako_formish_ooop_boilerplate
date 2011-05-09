@@ -13,7 +13,7 @@ CONF_NAME = 'server.conf'
 
 
 
-class WebPublishing(object):
+class WebPublisher(object):
     def index(self):
         html = ''
         html += self.header()
@@ -39,5 +39,5 @@ class WebPublishing(object):
 
 if __name__ == '__main__':
     conf_file = os.path.join(current_folder, CONF_NAME)
-    cherrypy.quickstart(WebPublishing(), config=conf_file)
+    cherrypy.quickstart(WebPublisher(), config=conf_file)
 
