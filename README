@@ -12,11 +12,24 @@ This code is sponsored by Smile.
 How-to setup this module
 ------------------------
 
-1. Run the following command to run the server:
+1. Install system dependencies using your favorite package manager. Here is the
+   example for an Ubuntu machine:
 
-     $ python ./server.py
+     $ apt-get install python-dev
 
-2. Go to the following URL in your browser:
+2. Initialize the buildout environment:
+
+     $ python ./bootstrap.py --distribute
+
+3. Run buildout itself:
+
+     $ ./bin/buildout
+
+4. Run the following command to run the server:
+
+     $ ./bin/web_publisher
+
+5. Go to the following URL in your browser:
 
      http://localhost:8081
 
