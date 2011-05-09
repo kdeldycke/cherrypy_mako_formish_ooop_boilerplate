@@ -14,6 +14,8 @@ CONF_NAME = 'server.conf'
 
 
 class WebPublisher(object):
+
+    @cherrypy.expose
     def index(self):
         html = ''
         html += self.header()
@@ -45,9 +47,6 @@ class WebPublisher(object):
 
     def footer(self):
         return "</body>"
-
-    # Some class config
-    index.exposed = True
 
 
 
