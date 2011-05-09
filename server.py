@@ -18,6 +18,19 @@ class WebPublisher(object):
         html = ''
         html += self.header()
         html += "<h1>OpenERP Web Publishing Module</h1>"
+        # Let's get some info from a demo OpenERP instance
+        o = OOOP( user   = 'admin'
+                , pwd    = 'admin'
+                , dbname = 'kev_test'
+                , uri    = 'http://localhost'
+                , port   = 8069 # We are targetting the HTTP web service here
+                )
+        html += "<p>Connection to web service established at: %s</p>" % (repr(o).replace('<', '&lt;').replace('>', '&gt;'))
+        partners = o.ResPartner.all()
+        html += "<ul>"
+        for partner in partners:
+          html += "<li>%s</li>" % partner.name
+        html += "</ul>"
         html += self.footer()
         return html
 
