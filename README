@@ -1,0 +1,9 @@
+Web Publishing for OpenERP
+--------------------------
+
+This is an ugly but working hack to publish some kind of OpenERP content on the web.
+
+It leverage Python's module used in OpenERP like CherryPy.
+
+This code is sponsored by Smile.
+
