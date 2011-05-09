@@ -1,14 +1,10 @@
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title></title>
-  </head>
-  <body>
-    <h1>OpenERP Web Publishing Module</h1>
-      <ul>
-      % for name in partner_names:
-        <li>${name}</li>
-      % endfor
-      </ul>
-  </body>
-</html>
+<%inherit file="base.html"/>
+
+<%block name="title">Index page</%block>
+
+<ul>
+% for name in partner_names:
+    <li>${name}</li>
+% endfor
+</ul>
+
