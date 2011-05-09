@@ -19,6 +19,7 @@ class WebPublisher(object):
         html += self.header()
         html += "<h1>OpenERP Web Publishing Module</h1>"
         # Let's get some info from a demo OpenERP instance
+        # Some doc on OOOP: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
         o = OOOP( user   = 'admin'
                 , pwd    = 'admin'
                 , dbname = 'kev_test'
