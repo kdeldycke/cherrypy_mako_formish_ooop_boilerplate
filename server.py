@@ -68,6 +68,8 @@ def main():
     # Load and apply the global config file
     conf_file = os.path.join(current_folder, CONF_NAME)
     cherrypy.config.update(conf_file)
+    # Redirect all errors to a single general page
+    cherrypy.config.update({'error_page.default': os.path.join(current_folder, 'static/error.html')})
     # Open a connection to our local OpenERP instance
     # Some doc: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
     openerp = OOOP( user   = 'admin'
