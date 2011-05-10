@@ -60,7 +60,14 @@ class MakoLoader(object):
 
 
 def main():
+    # Here is the default config for statix content
+    conf = { '/static': { 'tools.staticdir.on' : True
+                        , 'tools.staticdir.dir': os.path.join(current_folder, 'static')
+                        }
+           }
+    # Load and apply the global config file
     conf_file = os.path.join(current_folder, CONF_NAME)
+    cherrypy.config.update(conf_file)
     # Open a connection to our local OpenERP instance
     # Some doc: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
     openerp = OOOP( user   = 'admin'
@@ -75,7 +82,7 @@ def main():
     # Import our application logic
     from app import app
     # Start the CherryPy server
-    cherrypy.quickstart(app(openerp), config=conf_file)
+    cherrypy.quickstart(app(openerp), config=conf)
 
 
 
