@@ -1,10 +1,10 @@
 <%inherit file="base.html"/>
 
-<%block name="title">Index page</%block>
+<%block name="title">Partner list</%block>
 
 <ul>
-% for name in partner_names:
-    <li>${name}</li>
+% for (id, name) in partners:
+    <li><a href="./view/${id}">${name}</a></li>
 % endfor
 </ul>
 
