@@ -13,6 +13,7 @@ class app(object):
         return {'partner_names': partner_names}
 
     @cherrypy.expose
+    # TODO: do not expose this when in production
     def default(self, *args, **kwargs):
         return "<html><body><ul><li>args: <code>%s</code></li><li>kwargs: <code>%s</code></li></ul></body></html>" % (args, kwargs)
 
