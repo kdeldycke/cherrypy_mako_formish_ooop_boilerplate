@@ -65,6 +65,9 @@ def main():
     conf = { '/static': { 'tools.staticdir.on' : True
                         , 'tools.staticdir.dir': os.path.join(current_folder, 'static')
                         }
+           , '/favicon.png': { 'tools.staticfile.on'      : True
+                             , 'tools.staticfile.filename': os.path.join(current_folder, 'static/favicon.png')
+                             }
            }
     # Load and apply the global config file
     conf_file = os.path.join(current_folder, CONF_NAME)
