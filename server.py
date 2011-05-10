@@ -22,29 +22,22 @@ current_folder = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(current_folder, LIB_DIRNAME, 'ooop'))
 from ooop import OOOP
 
-
-
-class WebPublisher(object):
-
-    @cherrypy.expose
-    def index(self):
-        # Let's get some info from a demo OpenERP instance
-        # Some doc on OOOP: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
-        o = OOOP( user   = 'admin'
-                , pwd    = 'admin'
-                , dbname = 'kev_test'
-                , uri    = 'http://localhost'
-                , port   = 8069 # We are targetting the HTTP web service here
-                )
-        partner_names = [p.name for p in o.ResPartner.all()]
-        t = lookup.get_template("index.html")
-        return t.render(partner_names=partner_names)
+# Import our application logic
+from app import app
 
 
 
 def main():
     conf_file = os.path.join(current_folder, CONF_NAME)
-    cherrypy.quickstart(WebPublisher(), config=conf_file)
+    # Open a connection to our local OpenERP instance
+    # Some doc: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
+    openerp = OOOP( user   = 'admin'
+                  , pwd    = 'admin'
+                  , dbname = 'kev_test'
+                  , uri    = 'http://localhost'
+                  , port   = 8069 # We are targetting the HTTP web service here
+                  )
+    cherrypy.quickstart(app(openerp), config=conf_file)
 
 
 
