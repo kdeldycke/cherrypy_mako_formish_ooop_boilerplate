@@ -2,6 +2,7 @@
 CONF_NAME         = 'server.conf'
 LIB_DIRNAME       = 'lib'
 TEMPLATES_DIRNAME = 'templates'
+DEBUG             = True
 
 
 # Import all stuff we need
@@ -68,8 +69,11 @@ def main():
     # Load and apply the global config file
     conf_file = os.path.join(current_folder, CONF_NAME)
     cherrypy.config.update(conf_file)
-    # Redirect all errors to a single general page
-    cherrypy.config.update({'error_page.default': os.path.join(current_folder, 'static/error.html')})
+    # Only show default error page and traceback in debug mode
+    if not DEBUG:
+        cherrypy.config.update({ 'error_page.default'     : os.path.join(current_folder, 'static/error.html')
+                               , 'request.show_tracebacks': False
+                               })
     # Open a connection to our local OpenERP instance
     # Some doc: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
     openerp = OOOP( user   = 'admin'
