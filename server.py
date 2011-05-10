@@ -16,9 +16,6 @@ current_folder = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(current_folder, LIB_DIRNAME, 'ooop'))
 from ooop import OOOP
 
-# Import our application logic
-from app import app
-
 
 
 class MakoHandler(cherrypy.dispatch.LateParamPageHandler):
@@ -75,6 +72,8 @@ def main():
     # Setup our Mako decorator
     loader = MakoLoader()
     cherrypy.tools.mako = cherrypy.Tool('on_start_resource', loader)
+    # Import our application logic
+    from app import app
     # Start the CherryPy server
     cherrypy.quickstart(app(openerp), config=conf_file)
 
