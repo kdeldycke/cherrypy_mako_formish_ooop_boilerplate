@@ -40,5 +40,15 @@ class app(object):
     @cherrypy.expose
     def do_edit(self, partner_id=None, name=None, email=None):
         partner_id = int(partner_id)
+        partner = self.openerp.ResPartner.get(partner_id)
+        updated = False
+        if partner.name != name:
+             partner.name = name
+             updated = True
+        if partner.email != email:
+             partner.email = email
+             updated = True
+        if updated:
+             partner.save()
         raise cherrypy.HTTPRedirect('/view/%s' % partner_id)
 
