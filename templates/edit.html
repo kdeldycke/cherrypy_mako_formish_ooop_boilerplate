@@ -2,12 +2,7 @@
 
 <%block name="title">Partner edit</%block>
 
-<form action="/do_edit" method="post">
-  <ul>
-    <li>Partner ID: ${id} <input type="hidden" name="partner_id" id="partner_id" value="${id}"></li>
-    <li>Partner name: <input type="text" name="name" id="name" value="${name}"/></li>
-    <li>Partner E-mail: <input type="text" name="email" id="email" value="${email}"/></li>
-  </ul>
-  <p><input type="submit" value="Submit"/> <a href="/view/${id}">Cancel</a></p>
-</form>
+${form()|n}
+
+<p><a href="/view/${id}">Cancel</a></p>
 

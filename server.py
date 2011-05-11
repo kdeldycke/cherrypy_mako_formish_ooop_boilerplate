@@ -11,6 +11,9 @@ import sys
 import cherrypy
 from mako.template import Template
 from mako.lookup   import TemplateLookup
+import schemaish, validatish, formish
+from pkg_resources import resource_filename
+
 
 # Import the local copy of the OOOP module
 current_folder = os.path.dirname(__file__)
@@ -42,6 +45,8 @@ class MakoLoader(object):
 
     def __call__(self, filename, directories=[TEMPLATES_DIRNAME], module_directory=None,
                  collection_size=-1, output_encoding='utf-8', encoding_errors='replace'):
+        # Always add formish's Mako templates
+        directories.append(resource_filename('formish', 'templates/mako'))
         # Find the appropriate template lookup.
         key = (tuple(directories), module_directory)
         try:
