@@ -15,7 +15,7 @@ class app(OpenERPTools):
     @cherrypy.expose
     @cherrypy.tools.mako(filename="view.html")
     def view(self, partner_id=None):
-        partner_id = int(partner_id)
+        partner_id = self.validate_openerp_id(partner_id)
         partner = self.openerp.ResPartner.get(partner_id)
         return { 'name' : partner.name
                , 'id'   : partner_id
@@ -26,24 +26,12 @@ class app(OpenERPTools):
     @cherrypy.expose
     @cherrypy.tools.mako(filename="edit.html")
     def edit(self, id=None, *args, **kwargs):
-        # Parse and clean-up URL parameters
-        try:
-            res_id = int(id)
-        except TypeError:
-            res_id = None
-
-        # If required parameters are not there, redirect to the base app
-        if res_id is None:
-            # Redirect to Partner's list
-            raise cherrypy.HTTPRedirect('/')
-        
+        res_id = self.validate_openerp_id(id)
         form = self.openerp_edit_form( ressource_type = 'res.partner'
                                      , res_id = res_id
                                      , fields = ['name', 'email', 'ean13', 'supplier']
                                      , kwargs = kwargs
                                      )
-
-        # Print the default edit form
         return { 'form': form
                , 'id'  : res_id
                }

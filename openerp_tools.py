@@ -19,6 +19,19 @@ class OpenERPTools(object):
         return "<html><body><ul><li>args: <code>%s</code></li><li>kwargs: <code>%s</code></li></ul></body></html>" % (args, kwargs)
 
 
+    def validate_openerp_id(ressource_id=None, error_redirect='/'):
+        """ Parse and clean-up an OpenERP ressource ID.
+            On error, redirect to the given URL.
+        """
+        try:
+            ressource_id = int(ressource_id)
+        except TypeError:
+            ressource_id = None
+        # TODO Extra check: does the ID exists ?
+        if ressource_id is None:
+            raise cherrypy.HTTPRedirect(error_redirect)
+
+
     def build_request(self, data):
         """ Helps us create WebOb-like request to feed Formish's forms.
             Inspired by formish/tests/testish/testish/lib/forms.py
