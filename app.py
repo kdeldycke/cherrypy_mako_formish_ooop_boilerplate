@@ -129,7 +129,11 @@ class app(object):
         # Get current OpenERP's object values and set them as form's defaults
         form.defaults = {'res_id': res_id}
         for f_id in shown_fields:
-            form.defaults[f_id] = getattr(ressource, f_id)
+            f_value = getattr(ressource, f_id)
+            f_type = fields[f_id]['ttype']
+            if f_type == 'char' and f_value is False:
+                f_value = ''
+            form.defaults[f_id] = f_value
 
         # Get the HTTP method
         http_method = cherrypy.request.method.upper()
