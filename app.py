@@ -54,7 +54,7 @@ class app(object):
             raise cherrypy.HTTPRedirect('/')
 
         # Get the ressource we're going to edit and its fields
-        ooop_res_name = 'ResPartner'
+        ooop_res_name = self.openerp.normalize_model_name(OPENERP_RESSOURCE)
         ressource = getattr(self.openerp, ooop_res_name).get(res_id)
         fields = getattr(ressource, 'fields')
 
