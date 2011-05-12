@@ -101,7 +101,6 @@ class app(object):
             # OpenERP's field properties to Schemaish's fields properties
             field_property_mapping = { 'string'  : {'property': 'title'}
                                      , 'help'    : {'property': 'description'}
-                                     #, '': 'validator'
                                      #, '': 'default'
                                      , 'required': {'validator': 'Required'}
                                      , 'size'    : {'validator': 'Length', 'param': 'max'}
