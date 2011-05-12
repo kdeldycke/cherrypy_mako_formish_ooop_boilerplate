@@ -16,11 +16,11 @@ class app(OpenERPTools):
     @cherrypy.tools.mako(filename="view.html")
     def view(self, partner_id=None):
         partner_id = self.validate_openerp_id(partner_id)
-        partner = self.openerp.ResPartner.get(partner_id)
-        return { 'name' : partner.name
-               , 'id'   : partner_id
-               , 'email': partner.email or 'Not set'
-               }
+        partner_data = self.openerp_get_data( ressource_type = 'res.partner'
+                                            , res_id = partner_id
+                                            , fields = ['name', 'id', 'email']
+                                            )
+        return partner_data
 
 
     @cherrypy.expose

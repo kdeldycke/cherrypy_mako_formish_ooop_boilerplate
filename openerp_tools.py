@@ -45,6 +45,28 @@ class OpenERPTools(object):
         return request
 
 
+    def openerp_get_data(self, ressource_type, res_id, fields=[]):
+        ooop_res_name = self.openerp.normalize_model_name(ressource_type)
+        ressource = getattr(self.openerp, ooop_res_name).get(res_id)
+        field_defs = getattr(ressource, 'fields')
+        field_names = field_defs.keys()
+        if not len(fields):
+            fields = field_names
+        data = {}
+        for f in fields:
+            # Protect us against our own stupidity
+            if f == 'id':
+                 data[f] = res_id
+            elif f in field_names:
+                 f_value = getattr(ressource, f)
+                 f_type = field_defs[f]['ttype']
+                 # Some values are not safe to print
+                 if f_type in ['char', 'date'] and f_value is False:
+                     f_value = '' 
+                 data[f] = f_value
+        return data
+
+
     def openerp_edit_form(self, ressource_type, res_id, fields=[], kwargs={}):
         # Set the default list of fields to show in the form
         shown_fields = fields
