@@ -30,6 +30,7 @@ class OpenERPTools(object):
         # TODO Extra check: does the ID exists ?
         if ressource_id is None:
             raise cherrypy.HTTPRedirect(error_redirect)
+        return ressource_id
 
 
     def build_request(self, data):
