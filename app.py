@@ -78,7 +78,7 @@ class app(object):
             # Format: {'openerp_type': ('schemaish_type', [default_validator_1, default_validator_2])}
             field_type_mapping = { 'char'      : {'t': 'String' , 'v_list': [{'validator_name': 'String'}]}
                                  , 'boolean'   : {'t': 'Boolean', 'v_list': []}
-#                                 , 'date'      : {'t': 'Date'   , 'v_list': [{'validator_name': ''}]}
+                                 , 'date'      : {'t': 'Date'   , 'v_list': []}
                                  , 'float'     : {'t': 'Float'  , 'v_list': [{'validator_name': 'Number'}]}
                                  #, XXX        : {'t': 'Integer', 'v_list': [{'validator_name': 'Integer'}]}
                                  #, XXX        : {'t': 'Decimal', 'v_list': [{'validator_name': 'Number'}]}
@@ -153,10 +153,14 @@ class app(object):
             f_type = fields[f_id]['ttype']
             if f_type == 'boolean':
                 form[f_id].widget = formish.Checkbox()
+            elif f_type == 'date':
+                form[f_id].widget = formish.DateParts()
             # Set default widget value
             f_value = getattr(ressource, f_id)
             if f_type == 'char' and f_value is False:
                 f_value = ''
+            if f_type == 'date' and f_value is False:
+                f_value = None
             form.defaults[f_id] = f_value
 
         # Get the HTTP method
