@@ -19,7 +19,7 @@ class OpenERPTools(object):
         return "<html><body><ul><li>args: <code>%s</code></li><li>kwargs: <code>%s</code></li></ul></body></html>" % (args, kwargs)
 
 
-    def validate_openerp_id(ressource_id=None, error_redirect='/'):
+    def validate_openerp_id(self, ressource_id=None, error_redirect='/'):
         """ Parse and clean-up an OpenERP ressource ID.
             On error, redirect to the given URL.
         """
