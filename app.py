@@ -1,9 +1,6 @@
 import cherrypy
 import schemaish, validatish, formish
-import webob
-from dottedish.api import dotted, flatten
-from urllib import urlencode
-
+from server import build_request
 
 
 class app(object):
@@ -11,23 +8,6 @@ class app(object):
 
     def __init__(self, openerp):
         self.openerp = openerp
-
-
-    def build_request(self, data, rawdata=False):
-        """ Copied from formish/tests/testish/testish/lib/forms.py
-        """
-        e = {'REQUEST_METHOD': 'POST'}
-        request = webob.Request.blank('/', environ=e)
-        fields = []
-        if rawdata is True:
-            for d in data:
-                fields.append(d)
-        else:
-            d = dotted(data)
-            for k, v in flatten(d):
-                fields.append((k, v))
-        request.body = urlencode(fields)
-        return request
 
 
     @cherrypy.expose
@@ -89,7 +69,7 @@ class app(object):
         # Process Partner's data sent by the user
         if http_method == 'POST':
             try:
-                form_data = form.validate(self.build_request(kwargs))
+                form_data = form.validate(build_request(kwargs))
             except formish.FormError, e:
                 form_data = {}
             # Update values if necessary
