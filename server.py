@@ -85,9 +85,15 @@ def main():
     conf = { '/static': { 'tools.staticdir.on' : True
                         , 'tools.staticdir.dir': os.path.join(current_folder, 'static')
                         }
-           , '/favicon.png': { 'tools.staticfile.on'      : True
-                             , 'tools.staticfile.filename': os.path.join(current_folder, 'static/favicon.png')
-                             }
+           , '/static/formish.css': { 'tools.staticfile.on'      : True
+                                    , 'tools.staticfile.filename': resource_filename('formish', 'css/formish.css')
+                                    }
+           , '/static/formish.js' : { 'tools.staticfile.on'      : True
+                                    , 'tools.staticfile.filename': resource_filename('formish', 'js/formish.js')
+                                    }
+           , '/favicon.png'       : { 'tools.staticfile.on'      : True
+                                    , 'tools.staticfile.filename': os.path.join(current_folder, 'static/favicon.png')
+                                    }
            }
     # Load and apply the global config file
     conf_file = os.path.join(current_folder, CONF_NAME)
