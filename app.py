@@ -95,7 +95,7 @@ class app(object):
             f_type = f_struct['ttype']
             if f_type not in field_type_mapping:
                 # Ignore unknown OpenERP types
-                break
+                continue
             s_class = getattr(schemaish, field_type_mapping[f_type])
 
             # OpenERP's field properties to Schemaish's fields properties
