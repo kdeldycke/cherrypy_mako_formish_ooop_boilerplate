@@ -13,9 +13,6 @@ from mako.template import Template
 from mako.lookup   import TemplateLookup
 import schemaish, validatish, formish
 from pkg_resources import resource_filename
-import webob
-from dottedish.api import dotted, flatten
-from urllib import urlencode
 
 # Import the local copy of the OOOP module
 current_folder = os.path.dirname(__file__)
@@ -64,19 +61,6 @@ class MakoLoader(object):
         # Replace the current handler.
         cherrypy.request.template = t = lookup.get_template(filename)
         cherrypy.request.handler = MakoHandler(t, cherrypy.request.handler)
-
-
-
-def build_request(data):
-    """ Helps us create WebOb-like request to feed Formish's forms.
-        Inspired by formish/tests/testish/testish/lib/forms.py
-    """
-    request = webob.Request.blank(cherrypy.url(), environ={'REQUEST_METHOD': 'POST'})
-    fields = []
-    for k, v in flatten(dotted(data)):
-        fields.append((k, v))
-    request.body = urlencode(fields)
-    return request
 
 
 
