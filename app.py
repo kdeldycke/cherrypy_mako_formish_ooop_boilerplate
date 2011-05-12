@@ -1,5 +1,4 @@
 import cherrypy
-import schemaish, validatish, formish
 from openerp_tools import OpenERPTools
 
 
