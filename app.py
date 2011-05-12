@@ -36,33 +36,100 @@ class app(object):
 
     @cherrypy.expose
     @cherrypy.tools.mako(filename="edit.html")
-    def edit(self, partner_id=None, *args, **kwargs):
+    def edit(self, id=None, *args, **kwargs):
+        # Edit form configuration
+        SHOWN_FIELDS = ['name', 'email', 'ean13']
+        OPENERP_RESSOURCE = 'res.partner'
 
         # Parse and clean-up URL parameters
         try: 
-            partner_id = int(partner_id)
+            res_id = int(id)
         except TypeError:
-            partner_id = None
+            res_id = None
 
         # If required parameters are not there, redirect to the base app
-        if partner_id is None:
+        if res_id is None:
             # Redirect to Partner's list
             raise cherrypy.HTTPRedirect('/')
 
-        # Get partner's data
-        partner = self.openerp.ResPartner.get(partner_id)
+        # Get the ressource we're going to edit and its fields
+        ooop_res_name = 'ResPartner'
+        ressource = getattr(self.openerp, ooop_res_name).get(res_id)
+        fields = getattr(ressource, 'fields')
 
-        # Define the edit form and its constraints
+        # Set the default list of fields to show in the form
+        shown_fields = SHOWN_FIELDS
+        # If no fields are specified, show all
+        if not len(shown_fields):
+            shown_fields = fields.keys()
+ 
+        # Generate Formish's schema based on OpenERP data model
         schema = schemaish.Structure()
-        schema.add('id'   , schemaish.Integer())
-        schema.add('name' , schemaish.String(title='Partner name'  , validator=validatish.Required()))
-        schema.add('email', schemaish.String(title='Partner E-mail', validator=validatish.Email()))
-        form = formish.Form(schema, 'partner_edit_form')
-        form['id'].widget = formish.Hidden()
-        form.defaults = { 'name' : partner.name
-                        , 'id'   : partner.id
-                        , 'email': partner.email or ''
-                        }
+        # Always add the current ressource ID
+        schema.add('res_id', schemaish.Integer())
+        # Generate an automattic form schema
+        for f_id in shown_fields:
+            
+            f_struct = fields[f_id]
+            f_type = f_struct['ttype']
+
+            # OpenERP's type to Formish's schema type mapping
+            field_type_mapping = { 'char'      : 'String'
+                                 , 'boolean'   : 'Boolean'
+                                 , 'date'      : 'Date'
+                                 #, 'float'    : 'Float'
+                                 #, XXX        : 'Integer'
+                                 #, XXX        : 'Decimal'
+                                 #, XXX        : 'Time'
+                                 #, XXX        : 'Sequence'
+                                 #, XXX        : 'Tuple'
+                                 #, XXX        : 'DateTime'
+                                 #, XXX        : 'File'
+                                 #, 'selection': XXX
+                                 #, 'many2one' : XXX
+                                 #, 'one2many' : XXX
+                                 #, 'many2many': XXX
+                                 }
+
+            # Create in Schemaish an alter-ego to OpenERP field
+            f_type = f_struct['ttype']
+            if f_type not in field_type_mapping:
+                # Ignore unknown OpenERP types
+                break
+            s_class = getattr(schemaish, field_type_mapping[f_type])
+
+            # OpenERP's field properties to Schemaish's fields properties
+            field_property_mapping = { 'string'  : {'property': 'title'}
+                                     , 'help'    : {'property': 'description'}
+                                     #, '': 'validator'
+                                     #, '': 'default'
+                                     , 'required': {'validator': 'Required'}
+                                     }
+
+            # Migrate schema properties from OpenERP to Schemaish
+            s_props = {}
+            for (f_prop_id, s_prop) in field_property_mapping.items():
+                 if f_prop_id in f_struct.keys():
+                      # This field property translates to a native property
+                      if 'property' in s_prop.keys():
+                          s_props[s_prop['property']] = f_struct[f_prop_id]
+                      # This field property translates to a validator
+                      elif 'validator' in s_prop.keys():
+                          v_class = getattr(validatish, s_prop['validator'])
+                          s_props['validator'] = v_class()
+
+            # Add the field to the schema
+            s = s_class(**s_props)
+            schema.add(f_id, s)
+
+        # Build the form
+        form = formish.Form(schema, '%s_form' % ooop_res_name)
+        form['res_id'].widget = formish.Hidden()
+        
+        # Get current OpenERP's object values and set them as form's defaults
+        form.defaults = {'res_id': res_id}
+        for f_id in shown_fields:
+            form.defaults[f_id] = getattr(ressource, f_id)
 
         # Get the HTTP method
         http_method = cherrypy.request.method.upper()
@@ -70,19 +137,21 @@ class app(object):
         if http_method == 'POST':
             try:
                 form_data = form.validate(build_request(kwargs))
+                # Do not try to update our ressource ID
+                del form_data['res_id']
             except formish.FormError, e:
                 form_data = {}
             # Update values if necessary
             object_updated = False
             for (property_name, new_value) in form_data.items():
-                if getattr(partner, property_name) != new_value:
-                    setattr(partner, property_name, new_value)
+                if getattr(ressource, property_name) != new_value:
+                    setattr(ressource, property_name, new_value)
                     object_updated = True
             if object_updated:
-                partner.save()
+                ressource.save()
 
         # Print the default edit form
         return { 'form': form
-               , 'id'  : partner_id
+               , 'id'  : res_id
                }
 
