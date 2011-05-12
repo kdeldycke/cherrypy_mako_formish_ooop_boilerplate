@@ -104,19 +104,24 @@ class app(object):
                                      #, '': 'validator'
                                      #, '': 'default'
                                      , 'required': {'validator': 'Required'}
+                                     , 'size'    : {'validator': 'Length', 'param': 'max'}
                                      }
 
             # Migrate schema properties from OpenERP to Schemaish
             s_props = {}
             for (f_prop_id, s_prop) in field_property_mapping.items():
                  if f_prop_id in f_struct.keys():
+                      f_value = f_struct[f_prop_id]
                       # This field property translates to a native property
                       if 'property' in s_prop.keys():
-                          s_props[s_prop['property']] = f_struct[f_prop_id]
+                          s_props[s_prop['property']] = f_value
                       # This field property translates to a validator
                       elif 'validator' in s_prop.keys():
                           v_class = getattr(validatish, s_prop['validator'])
-                          s_props['validator'] = v_class()
+                          v_param = {}
+                          if 'param' in s_prop.keys():
+                              v_param[s_prop['param']] = f_value
+                          s_props['validator'] = v_class(**v_param)
 
             # Add the field to the schema
             s = s_class(**s_props)
