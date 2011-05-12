@@ -75,8 +75,8 @@ class app(object):
         # Define the edit form and its constraints
         schema = schemaish.Structure()
         schema.add('id'   , schemaish.Integer())
-        schema.add('name' , schemaish.String(title='Partner name', validator=validatish.Required()))
-        schema.add('email', schemaish.String(title='Partner E-mail'))
+        schema.add('name' , schemaish.String(title='Partner name'  , validator=validatish.Required()))
+        schema.add('email', schemaish.String(title='Partner E-mail', validator=validatish.Email()))
         form = formish.Form(schema, 'partner_edit_form')
         form['id'].widget = formish.Hidden()
         form.defaults = { 'name' : partner.name
@@ -88,7 +88,10 @@ class app(object):
         http_method = cherrypy.request.method.upper()
         # Process Partner's data sent by the user
         if http_method == 'POST':
-            form_data = form.validate(self.build_request(kwargs))
+            try:
+                form_data = form.validate(self.build_request(kwargs))
+            except formish.FormError, e:
+                form_data = {}
             # Update values if necessary
             object_updated = False
             for (property_name, new_value) in form_data.items():
