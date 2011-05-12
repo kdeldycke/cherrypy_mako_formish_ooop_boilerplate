@@ -71,7 +71,7 @@ def build_request(data):
     """ Helps us create WebOb-like request to feed Formish's forms.
         Inspired by formish/tests/testish/testish/lib/forms.py
     """
-    request = webob.Request.blank('/', environ={'REQUEST_METHOD': 'POST'})
+    request = webob.Request.blank(cherrypy.url(), environ={'REQUEST_METHOD': 'POST'})
     fields = []
     for k, v in flatten(dotted(data)):
         fields.append((k, v))
