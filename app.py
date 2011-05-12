@@ -38,7 +38,8 @@ class app(object):
     @cherrypy.tools.mako(filename="edit.html")
     def edit(self, id=None, *args, **kwargs):
         # Edit form configuration
-        SHOWN_FIELDS = ['name', 'email', 'ean13']
+        SHOWN_FIELDS = ['name', 'email', 'ean13', 'supplier']
+        SHOWN_FIELDS = []
         OPENERP_RESSOURCE = 'res.partner'
 
         # Parse and clean-up URL parameters
@@ -74,12 +75,13 @@ class app(object):
             f_type = f_struct['ttype']
 
             # OpenERP's type to Formish's schema type mapping
-            field_type_mapping = { 'char'      : 'String'
-                                 , 'boolean'   : 'Boolean'
-                                 , 'date'      : 'Date'
-                                 #, 'float'    : 'Float'
-                                 #, XXX        : 'Integer'
-                                 #, XXX        : 'Decimal'
+            # Format: {'openerp_type': ('schemaish_type', [default_validator_1, default_validator_2])}
+            field_type_mapping = { 'char'      : {'t': 'String' , 'v_list': [{'validator_name': 'String'}]}
+                                 , 'boolean'   : {'t': 'Boolean', 'v_list': []}
+#                                 , 'date'      : {'t': 'Date'   , 'v_list': [{'validator_name': ''}]}
+                                 , 'float'     : {'t': 'Float'  , 'v_list': [{'validator_name': 'Number'}]}
+                                 #, XXX        : {'t': 'Integer', 'v_list': [{'validator_name': 'Integer'}]}
+                                 #, XXX        : {'t': 'Decimal', 'v_list': [{'validator_name': 'Number'}]}
                                  #, XXX        : 'Time'
                                  #, XXX        : 'Sequence'
                                  #, XXX        : 'Tuple'
@@ -96,38 +98,49 @@ class app(object):
             if f_type not in field_type_mapping:
                 # Ignore unknown OpenERP types
                 continue
-            s_class = getattr(schemaish, field_type_mapping[f_type])
+            s_class = getattr(schemaish, field_type_mapping[f_type]['t'])
 
             # OpenERP's field properties to Schemaish's fields properties
-            field_property_mapping = { 'string'  : {'property': 'title'}
-                                     , 'help'    : {'property': 'description'}
+            field_property_mapping = { 'string'  : {'property_name': 'title'}
+                                     , 'help'    : {'property_name': 'description'}
                                      #, '': 'default'
-                                     , 'required': {'validator': 'Required'}
-                                     , 'size'    : {'validator': 'Length', 'param': 'max'}
+                                     , 'required': {'validator_name': 'Required'}
+                                     , 'size'    : {'validator_name': 'Length', 'param_name': 'max'}
                                      }
 
             # Migrate schema properties from OpenERP to Schemaish
-            s_props = {'validator': []}
+            s = {'validator_list': field_type_mapping[f_type]['v_list']}
             for (f_prop_id, s_prop) in field_property_mapping.items():
                  if f_prop_id in f_struct.keys():
                       f_value = f_struct[f_prop_id]
                       # This field property translates to a native property
-                      if 'property' in s_prop.keys():
-                          s_props[s_prop['property']] = f_value
+                      if 'property_name' in s_prop.keys():
+                          s[s_prop['property_name']] = f_value
                       # This field property translates to a validator
-                      elif 'validator' in s_prop.keys():
-                          v_class = getattr(validatish, s_prop['validator'])
-                          v_param = {}
-                          if 'param' in s_prop.keys():
-                              v_param[s_prop['param']] = f_value
-                          # Multiple validators can be defined on a given field
-                          s_props['validator'] = s_props['validator'] + [v_class(**v_param)]
+                      elif 'validator_name' in s_prop.keys():
+                          updated_validator = s_prop
+                          if 'param_name' in s_prop.keys():
+                              updated_validator['param_value'] = f_value
+                          s['validator_list'] = s['validator_list'] + [updated_validator]
+
+            # Add some special validators in some cases
+            if f_id == 'website':
+                s['validator_list'] = s['validator_list'] + [{'validator_name': 'URL', 'param_name': 'with_scheme', 'param_value': True}]
+            elif f_id == 'email':
+                s['validator_list'] = s['validator_list'] + [{'validator_name': 'Email'}]
 
             # Collapse all validators into a compound one
-            s_props['validator'] = validatish.All(*s_props['validator'])
+            validator_object_list = []
+            for v in s['validator_list']:
+                v_param = {}
+                if 'param_name' in v.keys():
+                    v_param[v['param_name']] = v['param_value']
+                v_class = getattr(validatish, v['validator_name'])
+                validator_object_list.append(v_class(**v_param))
+            del s['validator_list']
+            s['validator'] = validatish.All(*validator_object_list)
             # Add the field to the schema
-            s = s_class(**s_props)
-            schema.add(f_id, s)
+            schema.add(f_id, s_class(**s))
 
         # Build the form
         form = formish.Form(schema, '%s_form' % ooop_res_name)
@@ -136,8 +149,12 @@ class app(object):
         # Get current OpenERP's object values and set them as form's defaults
         form.defaults = {'res_id': res_id}
         for f_id in shown_fields:
-            f_value = getattr(ressource, f_id)
+            # Set default widget type
             f_type = fields[f_id]['ttype']
+            if f_type == 'boolean':
+                form[f_id].widget = formish.Checkbox()
+            # Set default widget value
+            f_value = getattr(ressource, f_id)
             if f_type == 'char' and f_value is False:
                 f_value = ''
             form.defaults[f_id] = f_value
