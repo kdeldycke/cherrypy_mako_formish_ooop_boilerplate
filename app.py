@@ -154,12 +154,12 @@ class app(object):
             if f_type == 'boolean':
                 form[f_id].widget = formish.Checkbox()
             elif f_type == 'date':
-                form[f_id].widget = formish.DateParts()
+                form[f_id].widget = formish.DateParts(day_first=True)
             # Set default widget value
             f_value = getattr(ressource, f_id)
             if f_type == 'char' and f_value is False:
                 f_value = ''
-            if f_type == 'date' and f_value is False:
+            elif f_type == 'date' and f_value is False:
                 f_value = None
             form.defaults[f_id] = f_value
 
