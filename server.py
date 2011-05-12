@@ -67,20 +67,14 @@ class MakoLoader(object):
 
 
 
-def build_request(data, rawdata=False):
+def build_request(data):
     """ Helps us create WebOb-like request to feed Formish's forms.
-        Copied from formish/tests/testish/testish/lib/forms.py
+        Inspired by formish/tests/testish/testish/lib/forms.py
     """
-    e = {'REQUEST_METHOD': 'POST'}
-    request = webob.Request.blank('/', environ=e)
+    request = webob.Request.blank('/', environ={'REQUEST_METHOD': 'POST'})
     fields = []
-    if rawdata is True:
-        for d in data:
-            fields.append(d)
-    else:
-        d = dotted(data)
-        for k, v in flatten(d):
-            fields.append((k, v))
+    for k, v in flatten(dotted(data)):
+        fields.append((k, v))
     request.body = urlencode(fields)
     return request
 
