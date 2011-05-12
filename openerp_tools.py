@@ -13,6 +13,12 @@ class OpenERPTools(object):
         self.openerp = openerp
 
 
+    @cherrypy.expose
+    # TODO: do not expose this when in production
+    def default(self, *args, **kwargs):
+        return "<html><body><ul><li>args: <code>%s</code></li><li>kwargs: <code>%s</code></li></ul></body></html>" % (args, kwargs)
+
+
     def build_request(self, data):
         """ Helps us create WebOb-like request to feed Formish's forms.
             Inspired by formish/tests/testish/testish/lib/forms.py
