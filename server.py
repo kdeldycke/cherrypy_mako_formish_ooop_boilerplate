@@ -43,7 +43,8 @@ class MakoLoader(object):
         self.lookups = {}
 
     def __call__(self, filename, directories=[TEMPLATES_DIRNAME], module_directory=None,
-                 collection_size=-1, output_encoding='utf-8', encoding_errors='replace'):
+                 collection_size=-1, output_encoding='utf-8', input_encoding='utf-8',
+                 encoding_errors='replace'):
         # Always add formish's Mako templates
         directories.append(resource_filename('formish', 'templates/mako'))
         # Find the appropriate template lookup.
@@ -54,6 +55,7 @@ class MakoLoader(object):
             lookup = TemplateLookup(directories=directories,
                                     module_directory=module_directory,
                                     collection_size=collection_size,
+                                    input_encoding=input_encoding,
                                     output_encoding=output_encoding,
                                     encoding_errors=encoding_errors)
             self.lookups[key] = lookup
