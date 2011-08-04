@@ -51,6 +51,7 @@ in this environment:
 
 * CherryPy Tools code snippets: http://tools.cherrypy.org/wiki/TitleIndex
 * Some CherryPy notes: http://helpful.knobs-dials.com/index.php/CherryPy
+* An example of CherryPy application: http://bitbucket.org/Lawouach/twiseless
 * Mako documentation: http://www.makotemplates.org/docs/
 * Formish documentation: http://ish.io/embedded/formish/
 * Formish examples: http://test.ish.io/
