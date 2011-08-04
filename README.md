@@ -18,8 +18,8 @@ leveraged later for a customer project.
 
 
 
-How-to setup this module
-------------------------
+How-to install this app
+-----------------------
 
 1. Install system dependencies using your favorite package manager. Here is the
    example for an Ubuntu machine:
@@ -41,6 +41,20 @@ How-to setup this module
 1. Go to the following URL in your browser:
 
         http://localhost:8081
+
+
+Documentation
+-------------
+
+Here is a list of useful external documentation and references to help you work
+in this environment:
+
+* CherryPy Tools code snippets: http://tools.cherrypy.org/wiki/TitleIndex
+* Some CherryPy notes: http://helpful.knobs-dials.com/index.php/CherryPy
+* Mako documentation: http://www.makotemplates.org/docs/
+* Formish documentation: http://ish.io/embedded/formish/
+* Formish examples: http://test.ish.io/
+* OOOP examples: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
 
 
 
