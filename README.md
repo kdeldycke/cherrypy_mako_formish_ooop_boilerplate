@@ -61,7 +61,7 @@ in this environment:
 Author
 ------
 
- * [Kevin Deldycke](http://kevin.deldycke.com) <kevin@deldycke.com>
+ * [Kevin Deldycke](http://kevin.deldycke.com) - `kevin@deldycke.com`
 
 
 License
