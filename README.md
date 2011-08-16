@@ -58,6 +58,12 @@ in this environment:
 * OOOP examples: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
 
 
+Author
+------
+
+ * [Kevin Deldycke](http://kevin.deldycke.com) <kevin@deldycke.com>
+
+
 License
 -------
 
