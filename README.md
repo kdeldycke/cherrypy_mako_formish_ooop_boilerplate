@@ -1,21 +1,26 @@
 CherryPy + Mako + Formish + OOOP boilerplate
 ============================================
 
-This is an ugly hack to publish some [OpenERP](http://www.openerp.com/) content
-on the web.
+This project is my boilerplate codebase I created to integrate some Python
+components with the goal of publishing [OpenERP](http://www.openerp.com/)
+content on the web.
 
-It is based on:
+This stack is composed of:
 
-* [CherryPy](http://www.cherrypy.org/) web server,
-* use [Mako](http://www.makotemplates.org/) for HTML templating,
+* [CherryPy](http://www.cherrypy.org/) to serve web content,
+* it use [Mako](http://www.makotemplates.org/) for HTML templating,
 * [Formish](https://github.com/ish) for HTML form generation and validation,
-* [OOOP](https://github.com/lasarux/ooop) to talk to OpenERP server via web services.
+* [OOOP](https://github.com/lasarux/ooop) to talk to OpenERP server via web
+  services.
 
-This project contains the experimental code I produced while I explored the
-feasability of integrating these components. I produce this code while working
-for [Smile](http://www.smile.fr/). This code was a proof-of-concept that we
-leveraged later for a customer project.
+This project contains the experiments I did while working at
+[Smile](http://www.smile.fr/), when I explored the possibility of integrating
+these components. This code was a proof-of-concept that we leveraged later for
+a highly specific OpenERP project.
 
+Because of the highly experimental nature of this project, it contains lots of
+stupid and failed attempts. The whole code base should be thoroughly cleaned up
+before it can be considered reusable.
 
 
 How-to install this app
