@@ -1,4 +1,4 @@
-<%inherit file="base.html"/>
+<%inherit file="base.mako"/>
 
 <%block name="title">Partner list</%block>
 

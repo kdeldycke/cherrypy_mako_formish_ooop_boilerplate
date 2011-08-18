@@ -1,4 +1,4 @@
-<%namespace name="widgets" file="widgets.html"/>
+<%namespace name="widgets" file="widgets.mako"/>
 
 <html>
     <head>
