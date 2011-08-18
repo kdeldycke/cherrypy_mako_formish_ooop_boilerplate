@@ -8,6 +8,7 @@ DEBUG             = True
 # Import all stuff we need
 import os
 import sys
+import socket
 import cherrypy
 from mako.template import Template
 from mako.lookup   import TemplateLookup
@@ -86,17 +87,21 @@ def main():
     cherrypy.config.update(conf_file)
     # Only show default error page and traceback in debug mode
     if not DEBUG:
-        cherrypy.config.update({ 'error_page.default'     : os.path.join(current_folder, 'static/error.html')
-                               , 'request.show_tracebacks': False
+        cherrypy.config.update({ 'request.show_tracebacks': False
+                               , 'error_page.default'     : os.path.join(current_folder, 'static/error.html')
+                               # Treat 503 connectivity errors as maintenance
+                               , 'error_page.503'         : os.path.join(current_folder, 'static/maintenance.html')
                                })
     # Open a connection to our local OpenERP instance
-    # Some doc: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
-    openerp = OOOP( user   = 'admin'
-                  , pwd    = 'admin'
-                  , dbname = 'kev_test'
-                  , uri    = 'http://localhost'
-                  , port   = 8069 # We are targetting the HTTP web service here
-                  )
+    try:
+        openerp = OOOP( user   = 'admin'
+                    , pwd    = 'admin'
+                    , dbname = 'kev_test'
+                    , uri    = 'http://localhost'
+                    , port   = 8069 # We are targetting the HTTP web service here
+                    )
+    except (socket.timeout, socket.error):
+        raise cherrypy.HTTPError(503)
     # Setup our Mako decorator
     loader = MakoLoader()
     cherrypy.tools.mako = cherrypy.Tool('on_start_resource', loader)

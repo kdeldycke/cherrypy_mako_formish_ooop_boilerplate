@@ -8,6 +8,10 @@ CherryPy + Mako + Formish + OOOP boilerplate changelog
  * First public release.
    [2011-08-23] kdeldycke
 
+ * Catch connectivity issues to the OpenERP as 503 errors and treat them as
+   maintenance operations.
+   [2011-08-18] kdeldycke
+
 
 0.0 - 2011-05-09
 ----------------
