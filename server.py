@@ -112,8 +112,11 @@ def main():
     cherrypy.config.update(conf_file)
 
     # Only show default error page and traceback in debug mode
-    if not DEBUG:
-        cherrypy.config.update({ 'request.show_tracebacks': False
+    if DEBUG:
+        cherrypy.config.update({'autoreload.on': True})
+    else:
+        cherrypy.config.update({ 'autoreload.on'          : False
+                               , 'request.show_tracebacks': False
                                , 'error_page.default'     : os.path.join(current_folder, 'static/error.html')
                                # Alternatively, we can call a method to handle generic HTTP errors
                                #, 'error_page.default'     : redirect_home_on_error
