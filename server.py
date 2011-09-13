@@ -103,9 +103,14 @@ def main():
                                     , 'tools.staticfile.filename': os.path.join(current_folder, 'static/favicon.png')
                                     }
            }
+
+    # Desactivate encoding to bypass CherryPy 3.2 new defaults (see: http://www.cherrypy.org/wiki/UpgradeTo32#Responseencoding)
+    cherrypy.config.update({'tools.encode.on': False})
+
     # Load and apply the global config file
     conf_file = os.path.join(current_folder, CONF_NAME)
     cherrypy.config.update(conf_file)
+
     # Only show default error page and traceback in debug mode
     if not DEBUG:
         cherrypy.config.update({ 'request.show_tracebacks': False
