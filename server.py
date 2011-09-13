@@ -123,6 +123,20 @@ def main():
                                # Treat 503 connectivity errors as maintenance
                                , 'error_page.503'         : os.path.join(current_folder, 'static/maintenance.html')
                                })
+
+    # Monkey patch convertish to let it unfold multiple checkbox widgets encoded with dottedish
+    from convertish.convert import NumberToStringConverter
+    from dottedish.dottedlist import DottedList, unwrap_list
+    legacy_to_type = NumberToStringConverter.to_type
+    def to_type_wrapper(self_class, value, converter_options={}):
+        # Force decoding of dotted notation
+        if type(value) == DottedList:
+            value = unwrap_list(value)
+            if type(value) == type([]) and len(value) == 1:
+                value = value[0]
+        return legacy_to_type(self_class, value, converter_options)
+    NumberToStringConverter.to_type = to_type_wrapper
+
     # Open a connection to our local OpenERP instance
     try:
         openerp = OOOP( user   = 'admin'
