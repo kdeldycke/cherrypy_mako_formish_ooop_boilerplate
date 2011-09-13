@@ -73,6 +73,21 @@ class MakoLoader(object):
 
 
 
+def redirect_home_on_error(status, message, traceback, version):
+    """ Callable to redirect to home page on any HTTP error
+    """
+    home_url = "http://www.example.com"
+    # This is an ugly intermediate page to go back to the parent app and escape from the iframe we supposed to be in.
+    return """
+            <html>
+                <body onload="window.top.location.href = '%s';">
+                    <h1>Redirecting to the parent website...</h1>
+                </body>
+            </html>
+        """ % home_url
+
+
+
 def main():
     # Here is the default config for statix content
     conf = { '/static': { 'tools.staticdir.on' : True
@@ -95,6 +110,8 @@ def main():
     if not DEBUG:
         cherrypy.config.update({ 'request.show_tracebacks': False
                                , 'error_page.default'     : os.path.join(current_folder, 'static/error.html')
+                               # Alternatively, we can call a method to handle generic HTTP errors
+                               #, 'error_page.default'     : redirect_home_on_error
                                # Treat 503 connectivity errors as maintenance
                                , 'error_page.503'         : os.path.join(current_folder, 'static/maintenance.html')
                                })
