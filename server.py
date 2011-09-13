@@ -1,3 +1,5 @@
+# coding=UTF-8
+
 ### Some global variables
 CONF_NAME         = 'server.conf'
 LIB_DIRNAME       = 'lib'
