@@ -1,0 +1,20 @@
+--- dottedish/api.py.orig	2011-06-20 15:13:38.391972253 +0000
++++ dottedish/api.py	2011-06-20 15:16:31.751972273 +0000
+@@ -2,6 +2,7 @@
+ 
+ 
+ from simplegeneric import generic
++from operator import itemgetter
+ 
+ 
+ ##
+@@ -74,6 +75,9 @@
+     """
+     if container_factory is None:
+         container_factory = lambda p, c: {}
++    else:
++        # the `.n` keys need to be in order in case of list-like containers
++        l = sorted(l, key=itemgetter(0))
+     root = {}
+     for (key, value) in l:
+         set(root, key, value, container_factory=container_factory)
