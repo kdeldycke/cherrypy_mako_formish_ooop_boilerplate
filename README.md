@@ -63,6 +63,40 @@ in this environment:
 * OOOP examples: http://www.slideshare.net/raimonesteve/connecting-your-python-app-to-openerp-through-ooop
 
 
+TODO
+----
+
+* Profile the code with CherryPy built-in methods ?
+
+* Add a CSS compressor and combinator to save few bytes and queries.
+
+* Add the hash of the compiled.js file to its name (force cache invalidation).
+
+* Release dottedish 0.6.1 to Pypi and remove our ugly patch.
+
+* Use consistent localized dates accross datepickers, HTML, formish and OpenERP.
+
+* Update formish to make its internal messages translatable (errors, etc...).
+
+* Make a bug report to formish regarding multi-checkbox widget data deserialization (see: http://github.com/kdeldycke/cherrypy_mako_formish_ooop_boilerplate/commit/1ce33061c8f33a18c73c285021e69477fca0f50c ) ? Here are some relevent debug messages:
+
+    formish.Sequence(name='option_list', attr=schemaish.Sequence(schemaish.Integer()))
+    schemaish.Sequence(schemaish.Integer())
+    schemaish.Integer()
+    <function string_converter at 0x3018a28>
+    <convertish.convert.IntegerToStringConverter object at 0x34557d0>
+    <bound method IntegerToStringConverter.to_type of <convertish.convert.IntegerToStringConverter object at 0x3455490>>
+    <DottedList "[[u'3'], [u'4']]">
+
+* Clean and tidy up all that crappy code.
+
+* Use CherryPy tools decorator to factorize code.
+
+* Leverage CherryPy cache tools. Example: http://www.cherrypy.org/wiki/Caching and http://docs.cherrypy.org/dev/refman/lib/caching.html
+
+* Add aggressive caching of static images.
+
+
 Author
 ------
 
