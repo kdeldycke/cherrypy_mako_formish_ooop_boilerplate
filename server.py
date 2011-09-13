@@ -15,12 +15,16 @@ import cherrypy
 from mako.template import Template
 from mako.lookup   import TemplateLookup
 import schemaish, validatish, formish
+from formish.renderer import _default_renderer
 from pkg_resources import resource_filename
 
 # Import the local copy of the OOOP module
 current_folder = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(current_folder, LIB_DIRNAME, 'ooop'))
 from ooop import OOOP
+
+# Transform relative path to absolute
+template_folder = os.path.join(current_folder, TEMPLATES_DIRNAME)
 
 
 
@@ -45,7 +49,7 @@ class MakoLoader(object):
     def __init__(self):
         self.lookups = {}
 
-    def __call__(self, filename, directories=[TEMPLATES_DIRNAME], module_directory=None,
+    def __call__(self, filename, directories=[template_folder], module_directory=None,
                  collection_size=-1, output_encoding='utf-8', input_encoding='utf-8',
                  encoding_errors='replace'):
         # Always add formish's Mako templates
@@ -104,11 +108,18 @@ def main():
                     )
     except (socket.timeout, socket.error):
         raise cherrypy.HTTPError(503)
+
     # Setup our Mako decorator
     loader = MakoLoader()
     cherrypy.tools.mako = cherrypy.Tool('on_start_resource', loader)
+
+    # Let the default formish Mako renderer look at our local directory fisrt
+    # This let us ovveride default formish Mako templates
+    _default_renderer.lookup.directories.insert(0, template_folder)
+
     # Import our application logic
     from app import app
+
     # Start the CherryPy server
     cherrypy.quickstart(app(openerp), config=conf)
 
