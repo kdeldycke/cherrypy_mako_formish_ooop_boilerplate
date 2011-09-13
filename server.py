@@ -12,6 +12,7 @@ import os
 import sys
 import socket
 import cherrypy
+import datetime
 from mako.template import Template
 from mako.lookup   import TemplateLookup
 import schemaish, validatish, formish
@@ -136,6 +137,17 @@ def main():
                 value = value[0]
         return legacy_to_type(self_class, value, converter_options)
     NumberToStringConverter.to_type = to_type_wrapper
+
+    from convertish.convert import DateToStringConverter
+    # Monkey patch convertish again, but this time to parse our french-localized dates
+    legacy_parseDate = DateToStringConverter.parseDate
+    def parseDate_wrapper(self_class, value):
+        return legacy_parseDate(self_class, '-'.join(value.strip().split('/')[::-1]))
+    DateToStringConverter.parseDate = parseDate_wrapper
+    # This patch mirror the one above, to let convertish render our datetime object with our localized format
+    def from_type_replacement(self_class, value, converter_options={}):
+        return value is None and None or value.strftime('%d/%m/%Y')
+    DateToStringConverter.from_type = from_type_replacement
 
     # Open a connection to our local OpenERP instance
     try:
