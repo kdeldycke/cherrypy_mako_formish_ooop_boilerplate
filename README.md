@@ -68,7 +68,7 @@ TODO
 
 * Profile the code with CherryPy built-in methods ?
 
-* Add a CSS compressor and combinator to save few bytes and queries.
+* Add a CSS compressor and combinator to save few bytes and queries. See http://blog.toms-projekte.de/?p=33 for inspiration.
 
 * Add the hash of the compiled.js file to its name (force cache invalidation).
 
