@@ -100,7 +100,7 @@ TODO
 Author
 ------
 
- * [Kevin Deldycke](http://kevin.deldycke.com) - `kevin@deldycke.com`
+  * [Kevin Deldycke](https://github.com/kdeldycke)
 
 
 License
